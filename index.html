@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>4Synaris Scrim Manager</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+
+body{
+background:linear-gradient(135deg,#0b0f1a,#11182c);
+color:white;
+font-family:Segoe UI;
+margin:0;
+padding:0;
+}
+
+header{
+background:#11182c;
+padding:20px;
+text-align:center;
+font-size:28px;
+font-weight:bold;
+color:#00ffd5;
+border-bottom:2px solid #00ffd5;
+}
+
+.container{
+width:90%;
+margin:auto;
+margin-top:30px;
+}
+
+.dateBox{
+margin-bottom:20px;
+font-size:18px;
+}
+
+input[type="date"]{
+padding:8px;
+background:#0e1324;
+color:white;
+border:1px solid #333;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+background:#141a2e;
+border-radius:10px;
+overflow:hidden;
+}
+
+th{
+background:#1e2542;
+padding:12px;
+}
+
+td{
+padding:10px;
+border-top:1px solid #2e3552;
+text-align:center;
+}
+
+select,input{
+padding:6px;
+background:#0e1324;
+color:white;
+border:1px solid #333;
+}
+
+.buttons{
+margin-top:20px;
+}
+
+button{
+padding:10px 18px;
+margin:5px;
+background:#00ffd5;
+border:none;
+font-weight:bold;
+cursor:pointer;
+border-radius:6px;
+}
+
+.deleteBtn{
+background:#ff4d4d;
+color:white;
+}
+
+button:hover{
+opacity:0.85;
+}
+
+.footer{
+text-align:center;
+margin-top:40px;
+opacity:0.6;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+4Synaris Scrim Attendance
+</header>
+
+<div class="container">
+
+<div class="dateBox">
+Scrim Date:
+<input type="date" id="scrimDate">
+</div>
+
+<table id="playerTable">
+
+<tr>
+<th>Player</th>
+<th>Status</th>
+<th>Remarks</th>
+<th>Attendance</th>
+<th>Action</th>
+</tr>
+
+</table>
+
+<div class="buttons">
+<button onclick="addPlayer()">+ Add Player</button>
+<button onclick="submitAttendance()">Submit Attendance</button>
+</div>
+
+</div>
+
+<div class="footer">
+4Synaris Esports Manager
+</div>
+
+<script>
+
+const scriptURL="https://script.google.com/macros/s/AKfycbzaVqa-YF4Ag7LkOWDymNDbxgANDdWot4yqTE1JIAtqwZ07mS1Jf4njQmu9vRSbiQaJ/exec";
+
+const roster=[
+"Captain",
+"Gold Lane",
+"Mid Lane",
+"Jungler",
+"Roamer"
+];
+
+window.onload=()=>{
+
+roster.forEach(player=>{
+addPlayer(player);
+});
+
+}
+
+function addPlayer(name=""){
+
+let table=document.getElementById("playerTable");
+
+let row=table.insertRow();
+
+row.innerHTML=`
+
+<td><input value="${name}" placeholder="Player"></td>
+
+<td>
+<select>
+<option>Present</option>
+<option>Absent</option>
+</select>
+</td>
+
+<td>
+<input placeholder="Remarks">
+</td>
+
+<td class="attendance">0</td>
+
+<td>
+<button class="deleteBtn" onclick="deleteRow(this)">Delete</button>
+</td>
+
+`;
+
+}
+
+function deleteRow(btn){
+btn.parentElement.parentElement.remove();
+}
+
+function submitAttendance(){
+
+let date=document.getElementById("scrimDate").value;
+
+let rows=document.querySelectorAll("#playerTable tr");
+
+rows.forEach((row,i)=>{
+
+if(i===0)return;
+
+let player=row.cells[0].querySelector("input").value;
+let status=row.cells[1].querySelector("select").value;
+let remarks=row.cells[2].querySelector("input").value;
+
+fetch(scriptURL,{
+method:"POST",
+body:JSON.stringify({
+date:date,
+player:player,
+status:status,
+remarks:remarks
+})
+});
+
+});
+
+alert("Attendance submitted successfully!");
+
+}
+
+</script>
+
+</body>
+</html>
