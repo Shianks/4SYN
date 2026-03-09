@@ -32,18 +32,6 @@ margin:auto;
 margin-top:30px;
 }
 
-.dateBox{
-margin-bottom:20px;
-font-size:18px;
-}
-
-input[type="date"]{
-padding:8px;
-background:#0e1324;
-color:white;
-border:1px solid #333;
-}
-
 table{
 width:100%;
 border-collapse:collapse;
@@ -111,18 +99,12 @@ opacity:0.6;
 
 <div class="container">
 
-<div class="dateBox">
-Scrim Date:
-<input type="date" id="scrimDate">
-</div>
-
 <table id="playerTable">
 
 <tr>
 <th>Player</th>
 <th>Status</th>
 <th>Remarks</th>
-<th>Attendance</th>
 <th>Action</th>
 </tr>
 
@@ -141,23 +123,11 @@ Scrim Date:
 
 <script>
 
-const scriptURL="https://script.google.com/macros/s/AKfycbzaVqa-YF4Ag7LkOWDymNDbxgANDdWot4yqTE1JIAtqwZ07mS1Jf4njQmu9vRSbiQaJ/exec";
-
-const roster=[
-"Captain",
-"Gold Lane",
-"Mid Lane",
-"Jungler",
-"Roamer"
-];
+const scriptURL="https://script.google.com/macros/s/AKfycbyGAT1VuGqKQS-OumPXFzhrZV_4U9cMW94edxp6wDh7eoBGOVgsdF9IkbzrV1d8b6ZE/exec";
 
 window.onload=()=>{
-
-roster.forEach(player=>{
-addPlayer(player);
-});
-
-}
+addPlayer();
+};
 
 function addPlayer(name=""){
 
@@ -180,8 +150,6 @@ row.innerHTML=`
 <input placeholder="Remarks">
 </td>
 
-<td class="attendance">0</td>
-
 <td>
 <button class="deleteBtn" onclick="deleteRow(this)">Delete</button>
 </td>
@@ -196,8 +164,6 @@ btn.parentElement.parentElement.remove();
 
 function submitAttendance(){
 
-let date=document.getElementById("scrimDate").value;
-
 let rows=document.querySelectorAll("#playerTable tr");
 
 rows.forEach((row,i)=>{
@@ -211,7 +177,6 @@ let remarks=row.cells[2].querySelector("input").value;
 fetch(scriptURL,{
 method:"POST",
 body:JSON.stringify({
-date:date,
 player:player,
 status:status,
 remarks:remarks
